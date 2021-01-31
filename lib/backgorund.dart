@@ -1,3 +1,4 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:workmanager_test_app/notifications.dart';
@@ -8,43 +9,42 @@ class TaskName {
   static const LOCATION = "location";
 }
 
-void callbackDispatcher() {
-  Workmanager.executeTask((taskName, inputData) async {
-    switch (taskName) {
-      case TaskName.SEND_NOTIFICATION:
-        print('Dupaaaa 1222');
-        await sendNotification('Send notify task');
-        return true;
-        break;
-      case TaskName.PERIODIC_TASK:
-        print('Periodic heerereee');
-        await sendNotification('Period');
-        return true;
-      case TaskName.LOCATION:
-        print('Location hrere');
-        await notifyLocation();
-        return true;
-      default:
-    }
+Future<bool> callbackDispatcher(String taskName) async {
+  switch (taskName) {
+    case TaskName.SEND_NOTIFICATION:
+      print('Dupaaaa 1222');
+      await sendNotification('Send notify task');
+      break;
+    case TaskName.PERIODIC_TASK:
+      print('Periodic heerereee');
+      await sendNotification('Period');
+      break;
+    case TaskName.LOCATION:
+      print('Location hrere');
+      await notifyLocation();
+      break;
+    default:
+  }
 
-    return false;
-  });
+  BackgroundFetch.finish(taskName);
 }
 
 void setUpWorkManager() {
-  Workmanager.initialize(
+  BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: 15,
+    ),
     callbackDispatcher,
-    isInDebugMode: true,
   );
 }
 
 Future notifyLocation() async {
   var isEnabled = await Geolocator.isLocationServiceEnabled();
-  if(!isEnabled){
+  if (!isEnabled) {
     sendNotification('Location not enabled!');
     return;
   }
-  if(await Geolocator.checkPermission() != LocationPermission.always){
+  if (await Geolocator.checkPermission() != LocationPermission.always) {
     sendNotification("No permission to run always!");
     return;
   }

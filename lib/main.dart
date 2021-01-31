@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:workmanager/workmanager.dart';
 import 'package:workmanager_test_app/backgorund.dart' as bgnd;
 import 'package:workmanager_test_app/notifications.dart' as notify;
 
@@ -62,44 +62,46 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             RaisedButton(
               onPressed: () {
-                Workmanager.registerOneOffTask(
-                  Random().nextInt(9999).toString(),
-                  bgnd.TaskName.SEND_NOTIFICATION,
+                BackgroundFetch.scheduleTask(
+                  TaskConfig(
+                    taskId: bgnd.TaskName.SEND_NOTIFICATION,
+                    delay: 0,
+                  ),
                 );
               },
               child: Text('one off'),
             ),
             RaisedButton(
-              onPressed: () {
-                Workmanager.registerOneOffTask(
-                  Random().nextInt(9999).toString(),
-                  bgnd.TaskName.LOCATION,
-                );
-              },
+              // onPressed: () {
+              //   Workmanager.registerOneOffTask(
+              //     Random().nextInt(9999).toString(),
+              //     bgnd.TaskName.LOCATION,
+              //   );
+              // },
               child: Text('one off location'),
             ),
             RaisedButton(
-              onPressed: () {
-                Workmanager.registerPeriodicTask(
-                  Random().nextInt(9999).toString(),
-                  bgnd.TaskName.PERIODIC_TASK,
-                );
-              },
+              // onPressed: () {
+              //   Workmanager.registerPeriodicTask(
+              //     Random().nextInt(9999).toString(),
+              //     bgnd.TaskName.PERIODIC_TASK,
+              //   );
+              // },
               child: Text('perdiodic notify'),
             ),
             RaisedButton(
-              onPressed: () {
-                Workmanager.registerPeriodicTask(
-                  Random().nextInt(9999).toString(),
-                  bgnd.TaskName.LOCATION,
-                );
-              },
+              // onPressed: () {
+              //   Workmanager.registerPeriodicTask(
+              //     Random().nextInt(9999).toString(),
+              //     bgnd.TaskName.LOCATION,
+              //   );
+              // },
               child: Text('periodic location'),
             ),
             RaisedButton(
               child: Text('cancel all'),
               onPressed: () {
-                Workmanager.cancelAll();
+                BackgroundFetch.stop();
               },
             ),
           ],
